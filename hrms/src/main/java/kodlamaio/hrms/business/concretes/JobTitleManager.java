@@ -7,6 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import kodlamaio.hrms.business.abstracts.JobTitleService;
+import kodlamaio.hrms.core.utilities.results.DataResult;
+import kodlamaio.hrms.core.utilities.results.Result;
+import kodlamaio.hrms.core.utilities.results.SuccessDataResult;
+import kodlamaio.hrms.core.utilities.results.SuccessResult;
 import kodlamaio.hrms.dataAccess.abstracts.JobTitleDao;
 import kodlamaio.hrms.entities.concretes.JobTitle;
 @Service
@@ -14,33 +18,33 @@ public class JobTitleManager implements JobTitleService {
 
 	private JobTitleDao jobTitleDao;
 	
-	@Autowired
+	@Autowired // Java dünyasında çok popülerdir. Yeni nesil projelerde %100'e yakın kullanım oranı vardır.
+	//Normalde bağımlılık oluştursa da, bu şekilde kullanılmaktadır. Projeyi tarar,
+	//projede buna karşılık gelen sınıf varsa onu yerleştirmektedir. Injection'ı bu şekilde yapmaktadır.
+	
 	public JobTitleManager (JobTitleDao jobTitleDao) {
+		super();
 		this.jobTitleDao = jobTitleDao;
 		
 	}
 
+	
 	@Override
-	public void save(JobTitle jobTitle) {
-	this.jobTitleDao.save(jobTitle);
+	public DataResult<List<JobTitle>> getAll(){
+		
+	return new SuccessDataResult<List<JobTitle>> 
+	(this.jobTitleDao.findAll(),"Data listelendi."); 
+		
 		
 	}
 
-	@Override
-	public List<JobTitle> findAll() {
-		
-		return this.jobTitleDao.findAll();
-	}
 
 	@Override
-	public Optional<JobTitle> findOneByTitle(String title) {
-				return this.jobTitleDao.findOneByTitle(title);
+	public Result add(JobTitle jobtitle) {
+		this.jobTitleDao.save(jobtitle);
+		return new SuccessResult("İş eklendi.");
 	}
 
-	@Override
-	public List<JobTitle> getAll() {
-	
-		return this.jobTitleDao.findAll();
-	}
-	
+
+
 }
